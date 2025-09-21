@@ -1,0 +1,65 @@
+{{- if .Values.recipeService.create }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.recipeService.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.recipeService.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.recipeService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.recipeService.name }}
+    spec:
+      containers:
+        - name: server
+          image: "{{ .Values.recipeService.image }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50055
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: GOOGLE_GENAI_USE_VERTEXAI
+              value: "TRUE"
+            - name: GOOGLE_CLOUD_PROJECT
+              value: "{{ .Values.google.projectId }}"
+            - name: GOOGLE_CLOUD_LOCATION
+              value: "us-west1" # us-west1 has higher quota limits for imagen
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/var/secrets/google/key.json"
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+              readOnly: true
+          resources:
+            requests:
+              cpu: {{ .Values.recipeService.resources.requests.cpu }}
+              memory: {{ .Values.recipeService.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.recipeService.resources.limits.cpu }}
+              memory: {{ .Values.recipeService.resources.limits.memory }}
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-cloud-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.recipeService.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.recipeService.name }}
+  ports:
+    - protocol: TCP
+      port: 50055
+      targetPort: 50055
+{{- end }}

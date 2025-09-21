@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package recipe;
+
+option go_package = "github.com/GoogleCloudPlatform/microservices-demo/src/frontend/genproto;hipstershop";
+
+service RecipeService {
+  rpc AddRecipe (AddRecipeRequest) returns (AddRecipeResponse);
+  rpc ListRecipes (ListRecipesRequest) returns (ListRecipesResponse);
+  rpc GetRecipe (GetRecipeRequest) returns (GetRecipeResponse);
+  rpc GetSuggestedRecipes (SuggestedRecipesRequest) returns (ListRecipesResponse);
+  rpc ProcessRecipeRequest (ProcessRecipeRequestMessage) returns (ProcessRecipeResponse);
+}
+
+message AddRecipeRequest {
+  string user_id = 1;
+  string recipe_text = 2;
+}
+
+message AddRecipeResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// NEW: Recipe browsing messages
+message ListRecipesRequest {}
+
+message GetRecipeRequest {
+  string recipe_id = 1;
+}
+
+message SuggestedRecipesRequest {
+  repeated string cart_items = 1;
+  string session_id = 2;  // for caching
+}
+
+message ProcessRecipeRequestMessage {
+  string message = 1;           // Natural language input (existing)
+  string recipe_id = 2;         // Recipe ID for structured recipes (new)
+  int32 servings = 3;           // Desired servings (new)
+  string user_id = 4;           // User ID for cart operations (new)
+}
+
+message ProcessRecipeResponse {
+  bool success = 1;
+  string message = 2;
+  repeated string matched_products = 3;
+  repeated string ingredients = 4;
+  repeated string unmatched_ingredients = 5;
+}
+
+message Recipe {
+  string recipe_id = 1;
+  string title = 2;
+  string description = 3;
+  int32 default_servings = 4;
+  string cook_time = 5;
+  repeated Ingredient ingredients = 6;
+  repeated string instructions = 7;
+  string image_data = 8; // Base64 encoded image data
+}
+
+message Ingredient {
+  string name = 1;
+  float quantity = 2;
+  string unit = 3;
+}
+
+message ListRecipesResponse {
+  repeated Recipe recipes = 1;
+}
+
+message GetRecipeResponse {
+  Recipe recipe = 1;
+}

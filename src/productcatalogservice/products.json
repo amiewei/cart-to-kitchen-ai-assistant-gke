@@ -1,0 +1,484 @@
+{
+    "products": [
+        {
+            "id": "CHICKEN001",
+            "name": "Chicken Breast",
+            "description": "Fresh boneless, skinless chicken breast, perfect for healthy meals.",
+            "picture": "/static/img/products/chicken_breast.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 8,
+                "nanos": 990000000
+            },
+            "categories": [
+                "meat",
+                "poultry",
+                "fresh"
+            ]
+        },
+        {
+            "id": "BEEF001",
+            "name": "Ground Beef",
+            "description": "Fresh lean ground beef, 80/20 blend, perfect for tacos, burgers, and more.",
+            "picture": "/static/img/products/ground_beef.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 6,
+                "nanos": 990000000
+            },
+            "categories": [
+                "meat",
+                "beef",
+                "fresh"
+            ]
+        },
+        {
+            "id": "GARLIC001",
+            "name": "Garlic",
+            "description": "Fresh garlic bulbs",
+            "picture": "/static/img/products/garlic.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "aromatics"
+            ]
+        },
+        {
+            "id": "BELLPEPPER001",
+            "name": "Bell Peppers",
+            "description": "Fresh colorful bell peppers, sweet and crunchy, perfect for stir-fries.",
+            "picture": "/static/img/products/bell_peppers.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "peppers"
+            ]
+        },
+        {
+            "id": "OLIVEOIL001",
+            "name": "Olive Oil",
+            "description": "Extra virgin olive oil, cold-pressed for cooking and salads.",
+            "picture": "/static/img/products/olive_oil.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 12,
+                "nanos": 990000000
+            },
+            "categories": [
+                "oils",
+                "cooking",
+                "pantry"
+            ]
+        },
+        {
+            "id": "ONION001",
+            "name": "Yellow Onion",
+            "description": "Fresh yellow onions, a kitchen staple for cooking and flavoring.",
+            "picture": "/static/img/products/yellow_onion.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 990000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "aromatics"
+            ]
+        },
+        {
+            "id": "TOMATO001",
+            "name": "Roma Tomatoes",
+            "description": "Fresh Roma tomatoes, perfect for sauces, salads, and cooking.",
+            "picture": "/static/img/products/roma_tomatoes.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "tomatoes"
+            ]
+        },
+        {
+            "id": "LETTUCE001",
+            "name": "Lettuce",
+            "description": "Fresh crisp lettuce heads, perfect for salads and sandwiches.",
+            "picture": "/static/img/products/lettuce.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "greens"
+            ]
+        },
+        {
+            "id": "CHEESE001",
+            "name": "Cheddar Cheese",
+            "description": "Sharp cheddar cheese, aged for full flavor. Great for cooking and snacking.",
+            "picture": "/static/img/products/cheddar_cheese.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 4,
+                "nanos": 990000000
+            },
+            "categories": [
+                "dairy",
+                "cheese",
+                "fresh"
+            ]
+        },
+        {
+            "id": "TORTILLA001",
+            "name": "Flour Tortillas",
+            "description": "Soft flour tortillas, perfect for tacos, burritos, and wraps.",
+            "picture": "/static/img/products/flour_tortillas.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 990000000
+            },
+            "categories": [
+                "bread",
+                "tortillas",
+                "pantry"
+            ]
+        },
+        {
+            "id": "SALT001",
+            "name": "Sea Salt",
+            "description": "Fine sea salt for seasoning and cooking.",
+            "picture": "/static/img/products/sea_salt.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "spices",
+                "seasoning",
+                "pantry"
+            ]
+        },
+        {
+            "id": "THYME001",
+            "name": "Fresh Thyme",
+            "description": "Fresh thyme herbs, aromatic and perfect for seasoning.",
+            "picture": "/static/img/products/fresh_thyme.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 990000000
+            },
+            "categories": [
+                "herbs",
+                "fresh",
+                "seasoning"
+            ]
+        },
+        {
+            "id": "CARROTS001",
+            "name": "Carrots",
+            "description": "Fresh carrots, sweet and crunchy, perfect for soups and stir-fries.",
+            "picture": "/static/img/products/carrots.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "root vegetables"
+            ]
+        },
+        {
+            "id": "CELERY001",
+            "name": "Celery",
+            "description": "Fresh celery stalks, crisp and perfect for soups and snacks.",
+            "picture": "/static/img/products/celery.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 990000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "aromatics"
+            ]
+        },
+        {
+            "id": "NOODLES001",
+            "name": "Egg Noodles",
+            "description": "Wide egg noodles, perfect for soups and pasta dishes.",
+            "picture": "/static/img/products/egg_noodles.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 990000000
+            },
+            "categories": [
+                "pasta",
+                "noodles",
+                "pantry"
+            ]
+        },
+        {
+            "id": "SOYSAUCE001",
+            "name": "Soy Sauce",
+            "description": "Traditional soy sauce for Asian cooking and marinades.",
+            "picture": "/static/img/products/soy_sauce.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 990000000
+            },
+            "categories": [
+                "condiments",
+                "asian",
+                "pantry"
+            ]
+        },
+        {
+            "id": "TACOSHELLS001",
+            "name": "Taco Shells",
+            "description": "Crispy corn taco shells, perfect for stuffing with your favorite fillings.",
+            "picture": "/static/img/products/taco_shells.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 490000000
+            },
+            "categories": [
+                "shells",
+                "mexican",
+                "pantry"
+            ]
+        },
+        {
+            "id": "TACOSEASONING001",
+            "name": "Taco Seasoning",
+            "description": "Spicy taco seasoning blend for perfect Mexican flavors.",
+            "picture": "/static/img/products/taco_seasoning.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 490000000
+            },
+            "categories": [
+                "spices",
+                "seasoning",
+                "mexican"
+            ]
+        },
+        {
+            "id": "CHICKENBROTH001",
+            "name": "Chicken Broth",
+            "description": "Rich chicken broth, perfect for soups and cooking.",
+            "picture": "/static/img/products/chicken_broth.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 990000000
+            },
+            "categories": [
+                "broth",
+                "liquid",
+                "pantry"
+            ]
+        },
+        {
+            "id": "MILK001",
+            "name": "Whole Milk",
+            "description": "Fresh whole milk, perfect for cereal, coffee, and baking.",
+            "picture": "/static/img/products/whole_milk.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 490000000
+            },
+            "categories": [
+                "dairy",
+                "fresh",
+                "beverages"
+            ]
+        },
+        {
+            "id": "BREAD001",
+            "name": "Whole Wheat Bread",
+            "description": "Fresh sliced whole wheat bread, perfect for sandwiches and toast.",
+            "picture": "/static/img/products/whole_wheat_bread.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 990000000
+            },
+            "categories": [
+                "bread",
+                "bakery",
+                "pantry"
+            ]
+        },
+        {
+            "id": "BANANAS001",
+            "name": "Bananas",
+            "description": "Fresh ripe bananas, naturally sweet and perfect for snacking.",
+            "picture": "/static/img/products/bananas.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 990000000
+            },
+            "categories": [
+                "fruit",
+                "fresh",
+                "tropical"
+            ]
+        },
+        {
+            "id": "EGGS001",
+            "name": "Large Eggs",
+            "description": "Fresh large eggs, grade A, perfect for breakfast and baking.",
+            "picture": "/static/img/products/large_eggs.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "dairy",
+                "fresh",
+                "protein"
+            ]
+        },
+        {
+            "id": "RICE001",
+            "name": "Jasmine Rice",
+            "description": "Premium jasmine rice, aromatic and fluffy when cooked.",
+            "picture": "/static/img/products/jasmine_rice.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 4,
+                "nanos": 990000000
+            },
+            "categories": [
+                "grains",
+                "rice",
+                "pantry"
+            ]
+        },
+        {
+            "id": "SALMON001",
+            "name": "Salmon Fillets",
+            "description": "Fresh Atlantic salmon fillets, rich in omega-3 fatty acids.",
+            "picture": "/static/img/products/salmon_fillets.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 14,
+                "nanos": 990000000
+            },
+            "categories": [
+                "seafood",
+                "fish",
+                "fresh"
+            ]
+        },
+        {
+            "id": "MIXEDGREENS001",
+            "name": "Mixed Greens",
+            "description": "Fresh mixed salad greens including arugula, spinach, and lettuce.",
+            "picture": "/static/img/products/mixed_greens.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 4,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "greens"
+            ]
+        },
+        {
+            "id": "AVOCADO001",
+            "name": "Avocado",
+            "description": "Fresh ripe avocados, creamy and perfect for salads and guacamole.",
+            "picture": "/static/img/products/avocado.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 3,
+                "nanos": 990000000
+            },
+            "categories": [
+                "fruit",
+                "fresh",
+                "healthy"
+            ]
+        },
+        {
+            "id": "CUCUMBER001",
+            "name": "Cucumber",
+            "description": "Fresh crisp cucumbers, perfect for salads and snacking.",
+            "picture": "/static/img/products/cucumber.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 490000000
+            },
+            "categories": [
+                "vegetables",
+                "fresh",
+                "salad"
+            ]
+        },
+        {
+            "id": "LEMON001",
+            "name": "Lemon",
+            "description": "Fresh lemons, perfect for cooking, drinks, and garnishes.",
+            "picture": "/static/img/products/lemon.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 1,
+                "nanos": 990000000
+            },
+            "categories": [
+                "fruit",
+                "fresh",
+                "citrus"
+            ]
+        },
+        {
+            "id": "FRESHDILL001",
+            "name": "Fresh Dill",
+            "description": "Fresh dill herbs, aromatic and perfect for fish dishes and salads.",
+            "picture": "/static/img/products/fresh_dill.jpg",
+            "priceUsd": {
+                "currencyCode": "USD",
+                "units": 2,
+                "nanos": 990000000
+            },
+            "categories": [
+                "herbs",
+                "fresh",
+                "seasoning"
+            ]
+        }
+    ]
+}

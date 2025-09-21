@@ -1,0 +1,181 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# To run everything but the loadgenerator: skaffold dev -m app -p local
+# To run everything including the loadgenerator: skaffold run -p loadgenerator
+apiVersion: skaffold/v3
+kind: Config
+metadata:
+  name: app
+build:
+  platforms: ["linux/amd64", "linux/arm64"]
+  artifacts:
+  # image tags are relative; to specify an image repo (e.g. GCR), you
+  # must provide a "default repo" using one of the methods described
+  # here:
+  # https://skaffold.dev/docs/concepts/#image-repository-handling
+  - image: productcatalogservice
+    context: src/productcatalogservice
+  - image: frontend
+    context: src/frontend
+    docker:
+      dockerfile: Dockerfile
+  - image: recipeservice
+    context: .
+    docker:
+      dockerfile: src/recipeservice/Dockerfile
+  - image: cartadderagent
+    context: .
+    docker:
+      dockerfile: src/cartadderagent/Dockerfile
+  - image: ingredientmatcheragent
+    context: .
+    docker:
+      dockerfile: src/ingredientmatcheragent/Dockerfile
+  tagPolicy:
+    gitCommit: {}
+manifests:
+  helm:
+    releases:
+    - name: online-shop
+      chartPath: helm-chart
+      namespace: boutique
+      createNamespace: true
+      valuesFiles:
+      - helm-chart/values.yaml
+      setValueTemplates:
+        recipeService.image: "{{.IMAGE_FULLY_QUALIFIED_recipeservice}}"
+        cartAdderAgent.image: "{{.IMAGE_FULLY_QUALIFIED_cartadderagent}}"
+        ingredientMatcherAgent.image: "{{.IMAGE_FULLY_QUALIFIED_ingredientmatcheragent}}"
+        frontend.image: "{{.IMAGE_FULLY_QUALIFIED_frontend}}"
+        productCatalogService.image: "{{.IMAGE_FULLY_QUALIFIED_productcatalogservice}}"
+      setValues:
+        loadgenerator.enabled: false
+        googleCloud.createSecret: true
+      setFiles:
+        googleCloud.serviceAccountKey: ~/gcp/key.json
+# "gcb" profile allows building and pushing the images
+# on Google Container Builder without requiring docker
+# installed on the developer machine. However, note that
+# since GCB does not cache the builds, each build will
+# start from scratch and therefore take a long time.
+#
+# This is not used by default. To use it, run:
+#     skaffold run -p gcb
+profiles:
+- name: gcb
+  build:
+    googleCloudBuild:
+      diskSizeGb: 300
+      machineType: N1_HIGHCPU_32
+      timeout: 4000s
+# "debug" profile replaces the default Dockerfile in cartservice with Dockerfile.debug,
+# which enables debugging via skaffold.
+#
+# This profile is used by default when running skaffold debug.
+- name: debug
+  activation:
+  - command: debug
+  patches:
+  - op: replace
+    path: /build/artifacts/7/docker/dockerfile
+    value: Dockerfile.debug
+# The "network-policies" profile is not used by default.
+# You can use it in isolation or in combination with other profiles:
+#     skaffold run -p network-policies, debug
+- name: network-policies
+  patches:
+  - op: add
+    path: /manifests/kustomize/paths/1
+    value: kustomize/components/network-policies
+- name: loadgenerator
+  patches:
+  - op: replace
+    path: /manifests/helm/releases/0/setValues/loadgenerator.enabled
+    value: true
+# "local" profile for minikube development - avoids Docker Hub rate limits
+- name: local
+  build:
+    local:
+      push: false
+      useDockerCLI: true
+      useBuildkit: true
+      concurrency: 1  # Build one at a time to avoid resource contention
+    tagPolicy:
+      envTemplate:
+        template: "{{.IMAGE_NAME}}:latest"  # Use latest to match manual builds
+  deploy:
+    helm:
+      releases:
+      - name: online-shop
+        setValues:
+          # Use local images without pull policy
+          frontend.imagePullPolicy: Never
+          cartService.imagePullPolicy: Never
+          productCatalogService.imagePullPolicy: Never
+          recommendationService.imagePullPolicy: Never
+          shippingService.imagePullPolicy: Never
+          checkoutService.imagePullPolicy: Never
+          paymentService.imagePullPolicy: Never
+          currencyService.imagePullPolicy: Never
+          adService.imagePullPolicy: Never
+          emailService.imagePullPolicy: Never
+          recipeService.imagePullPolicy: Never
+          cartAdderAgent.imagePullPolicy: Never
+          ingredientMatcherAgent.imagePullPolicy: Never
+          # Enable verbose logging for local development
+          logging.level: "debug"
+          logging.console: "true"
+          NODE_ENV: "development"
+          # Set environment variables for local development
+          ENVIRONMENT: "development"
+          ENV_PLATFORM: "local"
+  # Add new production profile:
+- name: production
+  build:
+    tagPolicy:
+      gitCommit: {}
+  deploy:
+    helm:
+      releases:
+      - name: online-shop
+        setValues:
+          environment: "production"
+          cartDatabase.inClusterRedis.persistence.enabled: true
+          frontend.platform: "gcp"
+          # Suppress console logs in production
+          logging.level: "error"
+          logging.console: "false"
+          # Node.js specific environment variables
+          NODE_ENV: "production"
+          DEBUG: ""
+          # Optimized resources for AI workloads - reduced based on actual usage
+          recipeService.resources.requests.cpu: "400m"
+          recipeService.resources.requests.memory: "800Mi"
+          recipeService.resources.limits.cpu: "800m"
+          recipeService.resources.limits.memory: "1Gi"

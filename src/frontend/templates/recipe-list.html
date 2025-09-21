@@ -1,0 +1,197 @@
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!-- 
+  RECIPE BROWSING/LIST PAGE
+  This template displays:
+  - Grid of available predefined recipes
+  - AI-generated suggested recipes section (based on cart contents)
+  - Real-time recipe suggestions that update as cart changes
+  - Navigation to individual recipe detail pages
+-->
+
+{{ define "recipe-list" }} {{ template "header" . }}
+<div {{ with $.platform_css }} class="{{.}}" {{ end }}>
+  <span class="platform-flag"> {{$.platform_name}} </span>
+</div>
+<head>
+  <link
+    rel="stylesheet"
+    href="{{.baseUrl}}/static/styles/recipes.css?v={{.version}}"
+  />
+</head>
+
+  <main role="main" class="recipe-page">
+    <div class="recipe-content">
+        <!-- AI Suggested Recipes Section -->
+        <section id="suggested-recipes">
+          <h2>Suggested Recipes Based on Your Cart</h2>
+          <p class="text-muted">
+            Personalized recipe suggestions that make the most of your current cart items.
+          </p>
+
+          <div
+            class="loading-state text-center"
+            id="suggestions-loading"
+            style="display: none"
+          >
+            <div class="spinner-border text-primary" role="status" aria-label="Loading suggested recipes">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <p class="text-muted mt-2">Generating personalized recipes...</p>
+            <small class="text-muted">This may take a few moments</small>
+          </div>
+
+          <div
+            class="empty-cart-message text-center"
+            id="empty-cart-message"
+          >
+            <p class="mt-2">
+              Add 2 or more items to your cart to see personalized recipe
+              suggestions!
+            </p>
+          </div>
+
+          <div id="suggested-recipe-grid-container" style="display: none">
+            <div class="recipes-container" id="suggested-recipe-grid"></div>
+          </div>
+        </section>
+
+        <!-- Browse All Recipes Section -->
+        <section id="browse-recipes-section" style="margin-top: 3rem;">
+          <h2>Browse All Recipes</h2>
+          <p class="text-muted">
+            Discover delicious recipes and add ingredients directly to your cart!
+          </p>
+          <div class="recipes-container">
+            {{ range $.recipes }}
+            <div class="recipe-card" onclick="window.location.href='{{ $.baseUrl }}/recipe/{{.RecipeId}}'">
+              <div class="recipe-image-wrapper">
+                {{- if eq .RecipeId "salmon_salad" -}}
+                <img src="{{ $.baseUrl }}/static/images/preloaded-recipes/salmon_salad.jpg" alt="{{.Title}}"
+                  onerror="this.src='https://via.placeholder.com/300x200?text={{.Title}}'; console.log('Failed to load preloaded image for {{.RecipeId}}');">
+                {{- else if eq .RecipeId "beef_tacos" -}}
+                <img src="{{ $.baseUrl }}/static/images/preloaded-recipes/beef_tacos.jpg" alt="{{.Title}}"
+                  onerror="this.src='https://via.placeholder.com/300x200?text={{.Title}}'; console.log('Failed to load preloaded image for {{.RecipeId}}');">
+                {{- else if eq .RecipeId "chicken_soup" -}}
+                <img src="{{ $.baseUrl }}/static/images/preloaded-recipes/chicken_noodle_soup.jpg" alt="{{.Title}}"
+                  onerror="this.src='https://via.placeholder.com/300x200?text={{.Title}}'; console.log('Failed to load preloaded image for {{.RecipeId}}');">
+                {{- else -}}
+                <img src="https://via.placeholder.com/300x200?text={{.Title}}" alt="{{.Title}}"
+                  onerror="this.parentElement.innerHTML='<div class=&quot;recipe-image-placeholder&quot;></div>'; this.remove();">
+                {{- end -}}
+              </div>
+              <div class="recipe-info">
+                <h3>{{.Title}}</h3>
+                <p>{{.Description}}</p>
+                <div class="recipe-meta">
+                  <span class="badge badge-secondary">⏱️ {{.CookTime}}</span>
+                  <span class="badge badge-secondary">👥 {{.DefaultServings}} servings</span>
+                </div>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </section>
+        </div>
+</main>
+<!-- FIXED Template for suggested recipe cards -->
+<template id="suggested-recipe-card-template">
+  <div class="recipe-card suggested">
+    <div class="recipe-image-container">
+      <!-- Image will be loaded here progressively -->
+      <div class="loading-overlay" style="display: none;">
+        <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+        <span>Loading recipe image...</span>
+      </div>
+    </div>
+    <div class="recipe-info">
+      <h3 class="recipe-title-link">Recipe Title</h3>
+      <p class="recipe-description">Recipe description</p>
+      <div class="recipe-meta">
+        <span class="badge badge-secondary recipe-cook-time"></span>
+        <span class="badge badge-secondary recipe-servings"></span>
+      </div>
+    </div>
+  </div>
+</template>
+  <!-- Include cart SSE for real-time suggested recipes -->
+
+<script
+  src="{{ $.baseUrl }}/static/js/cart-sse.js?v={{ $.currentYear }}"
+  onerror="console.error('Failed to load cart-sse.js')"
+></script>
+
+<script>
+  // Check cart status immediately using header cart count (server-rendered, accurate)
+  function setInitialSuggestedRecipesState() {
+    // Look for cart count in header elements
+    const cartElements = document.querySelectorAll('.cart-size, .cart-count, [class*="cart"]');
+    let cartCount = 0;
+    
+    // Find the element with the cart count number
+    for (const element of cartElements) {
+      const count = parseInt(element.textContent) || 0;
+      if (count > 0) {
+        cartCount = count;
+        break;
+      }
+    }
+    
+    const emptyMessage = document.getElementById('empty-cart-message');
+    const loadingState = document.getElementById('suggestions-loading');
+    
+    console.log('Initial cart count from header:', cartCount);
+    
+    if (cartCount >= 2) {
+      // Cart has enough items - show loading state
+      if (emptyMessage) emptyMessage.style.display = 'none';
+      if (loadingState) loadingState.style.display = 'block';
+      return true;
+    } else {
+      // Cart doesn't have enough items - show empty message  
+      if (emptyMessage) emptyMessage.style.display = 'block';
+      if (loadingState) loadingState.style.display = 'none';
+      return false;
+    }
+  }
+
+  // Function to initialize CartSSE with retry logic
+  function initializeCartSSE(retryCount = 0) {
+    const maxRetries = 10;
+    const retryDelay = 100; // 100ms delay between retries
+
+    if (typeof CartSSE === "undefined") {
+      if (retryCount < maxRetries) {
+        console.log(`CartSSE not ready, retrying... (${retryCount + 1}/${maxRetries})`);
+        setTimeout(() => initializeCartSSE(retryCount + 1), retryDelay);
+        return;
+      } else {
+        console.error("CartSSE failed to load after", maxRetries, "retries");
+        return;
+      }
+    }
+
+    console.log("CartSSE loaded successfully, initializing...");
+    const cartSSE = new CartSSE();
+    cartSSE.connect();
+  }
+
+  setInitialSuggestedRecipesState();
+
+</script>
+  {{ template "footer" . }} {{ end }}
+</body>

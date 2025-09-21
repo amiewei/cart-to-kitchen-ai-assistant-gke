@@ -1,0 +1,13 @@
+a2a-sdk[http-server]
+google-adk  # Google Agent Development Kit for Gemini (recipes)
+google-genai  # Google GenAI SDK for image generation (replaces deprecated Vertex AI)
+grpcio
+grpcio-tools
+protobuf
+requests
+httpx
+uuid
+uvicorn
+fastapi
+cachetools  # For TTL cache
+Pillow>=9.0.0  # For image optimization and compression

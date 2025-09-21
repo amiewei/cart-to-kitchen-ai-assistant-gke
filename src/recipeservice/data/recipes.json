@@ -1,0 +1,174 @@
+{
+    "recipes": [
+        {
+            "recipe_id": "salmon_salad",
+            "title": "Mediterranean Salmon Salad",
+            "description": "Fresh herb-crusted salmon over crisp mixed greens with tangy lemon vinaigrette and creamy avocado.",
+            "default_servings": 4,
+            "cook_time": "25 minutes",
+            "ingredients": [
+                {
+                    "name": "Salmon Fillets",
+                    "quantity": 1.5,
+                    "unit": "lb"
+                },
+                {
+                    "name": "Mixed Greens",
+                    "quantity": 6,
+                    "unit": "cups"
+                },
+                {
+                    "name": "Avocado",
+                    "quantity": 2,
+                    "unit": "medium"
+                },
+                {
+                    "name": "Roma Tomatoes",
+                    "quantity": 1,
+                    "unit": "cup"
+                },
+                {
+                    "name": "Cucumber",
+                    "quantity": 1,
+                    "unit": "large"
+                },
+                {
+                    "name": "Olive Oil",
+                    "quantity": 4,
+                    "unit": "tbsp"
+                },
+                {
+                    "name": "Lemon",
+                    "quantity": 2,
+                    "unit": "medium"
+                },
+                {
+                    "name": "Fresh Dill",
+                    "quantity": 2,
+                    "unit": "tbsp"
+                }
+            ],
+            "instructions": [
+                "Preheat oven to 400°F and line a baking sheet with parchment paper",
+                "Pat salmon fillets dry and brush with 2 tablespoons olive oil",
+                "Season salmon with salt, pepper, and fresh dill",
+                "Bake salmon for 12-15 minutes until flaky and cooked through",
+                "While salmon bakes, wash and dry mixed greens thoroughly",
+                "Dice avocado into bite-sized cubes",
+                "Halve cherry tomatoes and slice cucumber into rounds",
+                "Juice lemons into a small bowl and whisk with remaining olive oil",
+                "Let salmon cool for 5 minutes, then flake into large chunks",
+                "Arrange mixed greens on serving plates",
+                "Top with salmon, avocado, tomatoes, and cucumber",
+                "Drizzle with lemon vinaigrette and serve immediately"
+            ]
+        },
+        {
+            "recipe_id": "beef_tacos",
+            "title": "Spicy Beef Tacos",
+            "description": "Perfectly seasoned ground beef in tortillas topped with sharp cheddar, fresh lettuce, and juicy tomatoes.",
+            "default_servings": 4,
+            "cook_time": "15 minutes",
+            "ingredients": [
+                {
+                    "name": "Ground Beef",
+                    "quantity": 1.0,
+                    "unit": "lb"
+                },
+                {
+                    "name": "Flour Tortillas",
+                    "quantity": 8,
+                    "unit": "pieces"
+                },
+                {
+                    "name": "Cheddar Cheese",
+                    "quantity": 5,
+                    "unit": "oz"
+                },
+                {
+                    "name": "Lettuce",
+                    "quantity": 0.5,
+                    "unit": "head"
+                },
+                {
+                    "name": "Roma Tomatoes",
+                    "quantity": 1.5,
+                    "unit": "medium"
+                },
+                {
+                    "name": "Taco Seasoning",
+                    "quantity": 1,
+                    "unit": "packet"
+                }
+            ],
+            "instructions": [
+                "Heat a large skillet over medium-high heat",
+                "Add ground beef and cook, breaking it up with a spoon, for 5-7 minutes until browned",
+                "Drain excess fat from the pan",
+                "Add taco seasoning packet and stir well",
+                "Cook for 2-3 minutes until seasoning is well distributed",
+                "While beef cooks, warm tortillas according to package directions",
+                "Wash and chop lettuce into thin strips",
+                "Dice tomatoes into small cubes",
+                "Grate cheddar cheese if not pre-shredded",
+                "Fill each taco shell with seasoned beef",
+                "Top with lettuce, tomatoes, and cheese",
+                "Serve immediately"
+            ]
+        },
+        {
+            "recipe_id": "chicken_soup",
+            "title": "Hearty Chicken Noodle Soup",
+            "description": "Soul-warming broth with tender shredded chicken, tender vegetables, and perfectly cooked egg noodles.",
+            "default_servings": 4,
+            "cook_time": "45 minutes",
+            "ingredients": [
+                {
+                    "name": "Chicken Breast",
+                    "quantity": 1.0,
+                    "unit": "lb"
+                },
+                {
+                    "name": "Egg Noodles",
+                    "quantity": 6,
+                    "unit": "oz"
+                },
+                {
+                    "name": "Carrots",
+                    "quantity": 1.5,
+                    "unit": "large"
+                },
+                {
+                    "name": "Celery",
+                    "quantity": 1.5,
+                    "unit": "stalks"
+                },
+                {
+                    "name": "Chicken Broth",
+                    "quantity": 32,
+                    "unit": "fl oz"
+                },
+                {
+                    "name": "Yellow Onion",
+                    "quantity": 0.5,
+                    "unit": "large"
+                }
+            ],
+            "instructions": [
+                "Place chicken breasts in a large pot and cover with chicken broth",
+                "Bring to a boil, then reduce heat and simmer for 20-25 minutes until chicken is cooked through",
+                "Remove chicken from pot and set aside to cool, keeping the broth hot",
+                "While chicken cools, dice the onion, slice carrots into rounds, and chop celery",
+                "Shred the cooled chicken into bite-sized pieces",
+                "Add diced vegetables to the hot broth",
+                "Bring to a boil and cook for 10-15 minutes until vegetables are tender",
+                "Add egg noodles to the pot",
+                "Cook according to package directions (usually 6-8 minutes) until noodles are tender",
+                "Return shredded chicken to the pot",
+                "Stir gently to combine all ingredients",
+                "Simmer for 2-3 minutes to heat chicken through",
+                "Serve hot"
+            ]
+        }
+    ]
+}

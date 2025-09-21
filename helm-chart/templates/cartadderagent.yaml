@@ -1,0 +1,46 @@
+{{- if .Values.cartAdderAgent.create }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.cartAdderAgent.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.cartAdderAgent.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.cartAdderAgent.name }}
+    spec:
+      containers:
+      - name: server
+        image: "{{ .Values.cartAdderAgent.image }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVICE_NAME
+          value: "cartadderagent"
+        - name: SERVICE_PORT
+          value: "8080"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cartAdderAgent.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Values.cartAdderAgent.name }}
+  ports:
+  - port: 8080
+    targetPort: 8080
+{{- end }}

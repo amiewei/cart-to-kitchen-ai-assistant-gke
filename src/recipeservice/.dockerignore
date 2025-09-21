@@ -1,0 +1,53 @@
+# Ignore generated images (these are created at runtime)
+generated_food_images/
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Ignore development files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Ignore test files
+test_*.py
+*_test.py
+
+# Ignore sync script (development only)
+sync_recipe_images.sh
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

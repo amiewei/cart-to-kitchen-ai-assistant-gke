@@ -1,0 +1,50 @@
+{{- if .Values.ingredientMatcherAgent.create }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ingredientMatcherAgent.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.ingredientMatcherAgent.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ingredientMatcherAgent.name }}
+    spec:
+      containers:
+      - name: server
+        image: "{{ .Values.ingredientMatcherAgent.image }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVICE_NAME
+          value: "ingredientmatcheragent"
+        - name: SERVICE_PORT
+          value: "8080"
+        - name: PRODUCTCATALOG_SERVICE_HOST
+          value: "productcatalogservice"
+        - name: PRODUCTCATALOG_SERVICE_PORT
+          value: "3550"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ingredientMatcherAgent.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Values.ingredientMatcherAgent.name }}
+  ports:
+  - port: 8080
+    targetPort: 8080
+{{- end }}

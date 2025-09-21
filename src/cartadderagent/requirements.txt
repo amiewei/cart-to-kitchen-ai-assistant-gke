@@ -1,0 +1,9 @@
+a2a-sdk[http-server]
+google-adk
+grpcio
+grpcio-tools
+protobuf
+requests
+httpx
+uvicorn
+fastapi

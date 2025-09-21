@@ -1,0 +1,438 @@
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License. 
+-->
+
+<!-- 
+  RECIPE DETAIL PAGE
+  This template displays a single recipe with:
+  - Full recipe details (title, description, cook time, servings)
+  - Complete ingredients list with quantities
+  - Step-by-step cooking instructions
+  - Ability to select ingredients and add to cart
+-->
+
+{{ define "recipe-detail" }} {{ template "header" . }}
+<div {{ with $.platform_css }} class="{{.}}" {{ end }}>
+  <span class="platform-flag"> {{$.platform_name}} </span>
+</div>
+
+<main role="main">
+  <div class="h-recipe container">
+    <div class="row">
+      <div class="col-md-6">
+        {{- if $.suggested -}} {{- if $.recipe.ImageData -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="data:image/jpeg;base64,{{$.recipe.ImageData}}"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+        />
+        {{- else -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="https://via.placeholder.com/400x300?text={{$.recipe.Title}}"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+        />
+        {{- end -}} {{- else -}} {{- /* Handle pre-loaded static recipes */ -}}
+        {{- if eq $.recipe.RecipeId "salmon_salad" -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="{{ $.baseUrl }}/static/images/preloaded-recipes/salmon_salad.jpg"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+          onerror="this.src='https://via.placeholder.com/400x300?text={{$.recipe.Title}}'; console.log('Failed to load preloaded image for {{$.recipe.RecipeId}}');"
+        />
+        {{- else if eq $.recipe.RecipeId "beef_tacos" -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="{{ $.baseUrl }}/static/images/preloaded-recipes/beef_tacos.jpg"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+          onerror="this.src='https://via.placeholder.com/400x300?text={{$.recipe.Title}}'; console.log('Failed to load preloaded image for {{$.recipe.RecipeId}}');"
+        />
+        {{- else if eq $.recipe.RecipeId "chicken_soup" -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="{{ $.baseUrl }}/static/images/preloaded-recipes/chicken_noodle_soup.jpg"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+          onerror="this.src='https://via.placeholder.com/400x300?text={{$.recipe.Title}}'; console.log('Failed to load preloaded image for {{$.recipe.RecipeId}}');"
+        />
+        {{- else -}}
+        <img
+          class="recipe-image"
+          alt="{{$.recipe.Title}}"
+          src="https://via.placeholder.com/400x300?text={{$.recipe.Title}}"
+          style="width: 100%; max-height: 400px; object-fit: cover"
+        />
+        {{- end -}} {{- end -}}
+      </div>
+      <div class="recipe-info col-md-6">
+        <div class="recipe-wrapper">
+          <h2>{{ $.recipe.Title }}</h2>
+
+          <div class="recipe-meta mb-3">
+            <span class="badge badge-secondary mr-2"
+              >⏱️ {{$.recipe.CookTime}}</span
+            >
+          </div>
+
+          <p class="recipe-description">{{ $.recipe.Description }}</p>
+
+          <!-- Success message if recipe was added -->
+          {{ if $.added }}
+          <div class="alert alert-success" role="alert">
+            Recipe ingredients have been added to your cart!
+          </div>
+          {{ end }}
+
+          <div class="mt-3">
+            <a href="{{ $.baseUrl }}/recipes" class="btn btn-outline-secondary"
+              >← Back to Recipes</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipe Details Section -->
+    <form
+      method="POST"
+      action="{{ if $.suggested }}{{ $.baseUrl }}/suggested-recipe/{{$.recipe.RecipeId}}/add-to-cart{{ else }}{{ $.baseUrl }}/recipe/{{$.recipe.RecipeId}}/add-to-cart{{ end }}"
+      id="recipe-form"
+    >
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <h4>Instructions</h4>
+          {{ if $.recipe.Instructions }}
+          <ol class="instructions-list">
+            {{ range $index, $instruction := $.recipe.Instructions }}
+            <li class="mb-2">{{ $instruction }}</li>
+            {{ end }}
+          </ol>
+          {{ else }}
+          <p class="text-muted">Cooking instructions will be available soon!</p>
+          {{ end }}
+        </div>
+
+        <div class="col-md-6">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 id="ingredients-title" class="mb-0">Ingredients</h4>
+            <div class="d-flex align-items-center">
+              <label for="servings" class="mr-2 mb-0">Servings:</label>
+              <select
+                name="servings"
+                id="servings"
+                class="form-control form-control-sm"
+                style="width: auto; min-width: 80px"
+                onchange="updateIngredients();"
+              >
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+          <ul class="list-group" id="ingredients-list">
+            {{ range $index, $ingredient := $.recipe.Ingredients }}
+            <li
+              class="list-group-item d-flex align-items-center py-3"
+              data-name="{{$ingredient.Name}}"
+              data-ingredient="{{$ingredient.Name}}"
+              data-quantity="{{$ingredient.Quantity}}"
+              data-unit="{{$ingredient.Unit}}"
+            >
+              <div class="d-flex align-items-center w-100">
+                <div class="form-check mr-3">
+                  <input
+                    class="form-check-input ingredient-checkbox"
+                    type="checkbox"
+                    id="ingredient-{{$index}}"
+                    name="selected_ingredients"
+                    value="{{$ingredient.Name}}"
+                    checked
+                  />
+                  <label class="form-check-label" for="ingredient-{{$index}}">
+                  </label>
+                </div>
+                <div
+                  class="flex-grow-1 d-flex justify-content-between align-items-center"
+                >
+                  <div class="d-flex flex-column">
+                    <span class="ingredient-name">{{$ingredient.Name}}</span>
+                    {{ $cartStatus := index $.ingredient_cart_status
+                    $ingredient.Name }} {{ if $cartStatus }}
+                    {{ if $cartStatus.not_available }}
+                    <small class="text-muted cart-status">
+                      <i class="fas fa-ban"></i> Not available
+                    </small>
+                    {{ else }}
+                    <small class="text-success cart-status">
+                      <i class="fas fa-shopping-cart"></i> In cart
+                      ({{$cartStatus.quantity}})
+                    </small>
+                    {{ end }}
+                    {{ else }}
+                    <small class="cart-status"></small>
+                    {{ end }}
+                  </div>
+                  <span
+                    class="badge badge-primary badge-pill ingredient-badge ml-auto"
+                    >{{$ingredient.Quantity}} {{$ingredient.Unit}}</span
+                  >
+                </div>
+              </div>
+            </li>
+            {{ end }}
+          </ul>
+
+          <!-- Controls Row: Select/Deselect All and Add to Cart -->
+          <div
+            class="mt-2 mb-3 d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary mr-2"
+                onclick="selectAllIngredients()"
+              >
+                Select All
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                onclick="deselectAllIngredients()"
+              >
+                Deselect All
+              </button>
+            </div>
+
+            <div>
+              <button type="submit" class="cymbal-button-primary">
+                Add Selected Ingredients to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  // Store original recipe data
+  const originalServings = Number("{{$.recipe.DefaultServings}}");
+
+  // Debug logging
+  console.log("Recipe detail page loaded");
+  console.log("Recipe servings initialized:", { originalServings });
+  console.log("Recipe ID:", "{{$.recipe.RecipeId}}");
+  console.log("Is suggested recipe:", "{{ if $.suggested }}true{{ else }}false{{ end }}");
+
+  // Log initial checkbox state
+  window.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll(".ingredient-checkbox");
+    const checkedCount = document.querySelectorAll(".ingredient-checkbox:checked").length;
+    console.log("Initial checkboxes:", checkboxes.length, "checked:", checkedCount);
+    
+    // Add debugging to detect if form gets submitted automatically
+    const form = document.getElementById('recipe-form');
+    if (form) {
+      console.log("Recipe form found, adding submit event listener for debugging");
+      
+      // Check if form has any attributes that might cause auto-submission
+      console.log("Recipe form attributes:", {
+        action: form.action,
+        method: form.method,
+        onsubmit: form.onsubmit
+      });
+      
+      // Monitor if form gets submitted automatically
+      console.log("Page loaded completely, monitoring for automatic submissions...");
+      
+      // Check URL for success parameters that might indicate auto-submission happened
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('added') === 'true') {
+        console.log("FOUND: URL has 'added=true' parameter - ingredients were already submitted!");
+      }
+    } else {
+      console.error("Recipe form not found!");
+    }
+  });
+
+  // Validate on page load
+  if (isNaN(originalServings) || originalServings <= 0) {
+    console.error(
+      "Invalid original servings value:",
+      "{{$.recipe.DefaultServings}}"
+    );
+  }
+
+  function updateIngredients() {
+    const servingsSelect = document.getElementById("servings");
+    const newServings = parseInt(servingsSelect.value);
+
+    // Validate inputs
+    if (
+      isNaN(newServings) ||
+      newServings <= 0 ||
+      isNaN(originalServings) ||
+      originalServings <= 0
+    ) {
+      console.error("Invalid servings values:", {
+        newServings,
+        originalServings,
+      });
+      return;
+    }
+
+    const scaleFactor = newServings / originalServings;
+
+    // Update servings display
+    const currentServingsEl = document.getElementById("current-servings");
+    if (currentServingsEl) {
+      currentServingsEl.textContent = newServings;
+    }
+
+    // Update each ingredient
+    const ingredientItems = document.querySelectorAll("#ingredients-list li");
+    ingredientItems.forEach((item) => {
+      const quantityAttr = item.getAttribute("data-quantity");
+      const unit = item.getAttribute("data-unit");
+      const badge = item.querySelector(".ingredient-badge");
+
+      // Validate that we have the required data
+      if (!quantityAttr || !unit || !badge) {
+        console.warn("Missing ingredient data for item:", item);
+        return;
+      }
+
+      const originalQuantity = parseFloat(quantityAttr);
+      if (isNaN(originalQuantity)) {
+        console.warn("Invalid quantity for ingredient:", quantityAttr);
+        return;
+      }
+
+      let scaledQuantity = originalQuantity * scaleFactor;
+
+      // Smart rounding based on unit type
+      if (
+        unit === "pieces" ||
+        unit === "cloves" ||
+        unit === "packet" ||
+        unit === "piece"
+      ) {
+        // For countable items, round to nearest integer
+        scaledQuantity = Math.round(scaledQuantity);
+      } else {
+        // For measurable items, round to 1 decimal place
+        scaledQuantity = Math.round(scaledQuantity * 10) / 10;
+        // If it's a whole number, display without decimal
+        if (scaledQuantity === Math.floor(scaledQuantity)) {
+          scaledQuantity = Math.floor(scaledQuantity);
+        }
+      }
+
+      badge.textContent = `${scaledQuantity} ${unit}`;
+    });
+  }
+
+  function selectAllIngredients() {
+    const checkboxes = document.querySelectorAll(".ingredient-checkbox");
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = true;
+    });
+  }
+
+  function deselectAllIngredients() {
+    const checkboxes = document.querySelectorAll(".ingredient-checkbox");
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+  }
+
+  // Handle form submission to only include selected ingredients
+  document.getElementById("recipe-form").addEventListener("submit", function (e) {
+    console.log("Recipe form submission triggered");
+    console.log("Stack trace:", new Error().stack);
+    console.log("Event details:", e);
+
+    // Prevent double submission
+    if (this.dataset.submitting === 'true') {
+      console.log("Preventing double submission - form already being submitted");
+      e.preventDefault();
+      return false;
+    }
+    
+    // Mark as submitting immediately
+    this.dataset.submitting = 'true';
+    
+    // Disable the submit button to prevent double clicks
+    const submitButton = this.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Adding...';
+    }
+
+    // Remove any existing hidden ingredient inputs
+    const existingInputs = document.querySelectorAll(
+      'input[name="ingredient_list"]'
+    );
+    existingInputs.forEach((input) => input.remove());
+
+    // Get all checked ingredients
+    const checkedIngredients = [];
+    const checkboxes = document.querySelectorAll(
+      ".ingredient-checkbox:checked"
+    );
+
+    console.log("Found checked checkboxes:", checkboxes.length);
+
+    checkboxes.forEach((checkbox) => {
+      const listItem = checkbox.closest("li");
+      const name = listItem.dataset.name;
+      const currentBadge = listItem.querySelector(".ingredient-badge");
+      const quantityAndUnit = currentBadge.textContent.trim();
+
+      checkedIngredients.push(`${quantityAndUnit} ${name}`);
+    });
+
+    console.log("Selected ingredients:", checkedIngredients);
+
+    // Add selected ingredients as a hidden input
+    if (checkedIngredients.length > 0) {
+      const hiddenInput = document.createElement("input");
+      hiddenInput.type = "hidden";
+      hiddenInput.name = "ingredient_list";
+      hiddenInput.value = checkedIngredients.join(", ");
+      this.appendChild(hiddenInput);
+      console.log("Created hidden input with value:", hiddenInput.value);
+    } else {
+      // Prevent form submission if no ingredients selected
+      e.preventDefault();
+      this.dataset.submitting = 'false'; // Reset submission flag
+      alert("Please select at least one ingredient to add to cart.");
+      return false;
+    }
+  });
+</script>
+
+<!-- Include cart real-time updates -->
+<script src="{{ $.baseUrl }}/static/js/cart-sse.js"></script>
+
+{{ template "footer" . }} {{ end }}
